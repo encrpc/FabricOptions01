@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabric Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .popup-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+        
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            overflow: hidden;
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #ef4444;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            background-color: #dc2626;
+            transform: rotate(90deg);
+        }
+        
+        .popup-header {
+            padding: 15px 20px;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-blue-600 mb-2">Fabric Collection Viewer</h1>
+        <p class="text-gray-600 max-w-lg">Explore our premium fabric collections. Click on the buttons below to view different fabric types.</p>
+    </div>
+    
+    <div class="flex flex-col md:flex-row gap-6">
+        <!-- Button 1 -->
+        <div class="text-center">
+            <button 
+                id="btn1" 
+                class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                onclick="openPopup('popup1')"
+            >
+                <i class="fas fa-tshirt text-xl"></i>
+                <span>Taffata Collection</span>
+            </button>
+            <p class="mt-2 text-gray-500">Premium taffata fabrics</p>
+        </div>
+        
+        <!-- Button 2 -->
+        <div class="text-center">
+            <button 
+                id="btn2" 
+                class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                onclick="openPopup('popup2')"
+            >
+                <i class="fas fa-cut text-xl"></i>
+                <span>Fabric Cards</span>
+            </button>
+            <p class="mt-2 text-gray-500">Various fabric options</p>
+        </div>
+    </div>
+    
+    <!-- Popup 1 -->
+    <div id="popup1" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <span>Taffata Collection Viewer</span>
+            </div>
+            <div class="iframe-container">
+                <iframe src="https://encrpc.github.io/fabricSub3/Taffata/H_Taffata.html" allowfullscreen></iframe>
+                <div class="close-btn" onclick="closePopup('popup1')">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Popup 2 -->
+    <div id="popup2" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <span>Fabric Cards Viewer</span>
+            </div>
+            <div class="iframe-container">
+                <iframe src="https://encrpc.github.io/Fabrics_Sub04/Fabrics_OP01/FabricCards.html" allowfullscreen></iframe>
+                <div class="close-btn" onclick="closePopup('popup2')">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openPopup(popupId) {
+            document.getElementById(popupId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePopup(popupId) {
+            document.getElementById(popupId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close popup when clicking outside content
+        document.querySelectorAll('.popup-overlay').forEach(popup => {
+            popup.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+        
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.popup-overlay').forEach(popup => {
+                    popup.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
